@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="app_name">PocketSphinx Demo</string>
+    
+    <string name="kws_caption">To start say \"start game\".</string>
+    <string name="menu_caption">Game start! you can say \"score\", \"serve\".</string>
+    <string name="digits_caption">below is current key word</string>
+    <string name="forecast_caption">To try recognition of a weather forecast like \"sunny spells on Wednesday\".</string>
+    <string name="phone_caption">To try phonetic recognition say anything.</string>
+</resources>
