@@ -61,6 +61,7 @@ public class PocketSphinxActivity extends Activity implements
     private static final String MENU_SEARCH = "menu";
     private String keyWordResult="";
     Set<String> valSet = new HashSet<>();
+    private Pingpong game;
 
     /* Keyword we are looking for to activate menu */
     private static final String KEYPHRASE = "start game";
@@ -71,7 +72,7 @@ public class PocketSphinxActivity extends Activity implements
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
-
+        game = new Pingpong("pointwhite", "pointblack");
         // Prepare the data for UI
         captions = new HashMap<String, Integer>();
         captions.put(KWS_SEARCH, R.string.kws_caption);
@@ -109,6 +110,7 @@ public class PocketSphinxActivity extends Activity implements
                 }
             }
         }.execute();
+
     }
 
     @Override
@@ -117,7 +119,9 @@ public class PocketSphinxActivity extends Activity implements
         recognizer.cancel();
         recognizer.shutdown();
     }
-    
+
+    private String wholeString;
+
     /**
      * In partial result we get quick updates about current hypothesis. In
      * keyword spotting mode we can react here, in other modes we need to wait
@@ -133,8 +137,9 @@ public class PocketSphinxActivity extends Activity implements
             switchSearch(DIGITS_SEARCH);
         else
             keyWordResult = getKeyword(text);
-            if (keyWordResult!=null && !keyWordResult.equals("")){
-                ((TextView) findViewById(R.id.result_text)).setText(keyWordResult);
+            if (keyWordResult!=null && !keyWordResult.equals("")) {
+//                ((TextView) findViewById(R.id.result_text)).setText(keyWordResult);
+                game.gameUpdate(keyWordResult);
             }
     }
 
