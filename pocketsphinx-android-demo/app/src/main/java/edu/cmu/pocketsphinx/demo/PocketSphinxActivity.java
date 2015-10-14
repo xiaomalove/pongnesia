@@ -120,8 +120,6 @@ public class PocketSphinxActivity extends Activity implements
         recognizer.shutdown();
     }
 
-    private String wholeString;
-
     /**
      * In partial result we get quick updates about current hypothesis. In
      * keyword spotting mode we can react here, in other modes we need to wait
@@ -138,8 +136,8 @@ public class PocketSphinxActivity extends Activity implements
         else
             keyWordResult = getKeyword(text);
             if (keyWordResult!=null && !keyWordResult.equals("")) {
-//                ((TextView) findViewById(R.id.result_text)).setText(keyWordResult);
-                game.gameUpdate(keyWordResult);
+                ((TextView) findViewById(R.id.result_text)).setText(keyWordResult);
+//                game.gameUpdate(keyWordResult);
             }
     }
 
@@ -238,12 +236,14 @@ public class PocketSphinxActivity extends Activity implements
         valSet.add("pointwhite");
     }
 
+    private int keywordPreposition = -1;
     private String getKeyword(String s){
         String tmp = null;
         String[] a = s.split(" ");
         for (int i = 0;i<a.length;i++){
-            if (valSet.contains(a[i])){
+            if (valSet.contains(a[i]) && keywordPreposition < i){
                 tmp = a[i];
+                keywordPreposition = i;
             }
         }
         return tmp;
