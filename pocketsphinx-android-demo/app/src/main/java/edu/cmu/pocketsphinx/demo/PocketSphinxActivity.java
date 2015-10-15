@@ -60,6 +60,8 @@ public class PocketSphinxActivity extends Activity implements
     private static final String PHONE_SEARCH = "phones";
     private static final String MENU_SEARCH = "menu";
     private String keyWordResult="";
+    private boolean update = false;
+    private final Object lock = new Object();
     Set<String> valSet = new HashSet<>();
     private Pingpong game;
 
@@ -134,11 +136,20 @@ public class PocketSphinxActivity extends Activity implements
         if (text.equals(KEYPHRASE))
             switchSearch(DIGITS_SEARCH);
         else
-            keyWordResult = getKeyword(text);
-            if (keyWordResult!=null && !keyWordResult.equals("")) {
-                ((TextView) findViewById(R.id.result_text)).setText(keyWordResult);
-//                game.gameUpdate(keyWordResult);
+            {
+//                keyWordResult = getKeyword(text);
+                getKeyword(text);
+//                synchronized (lock){
+                    if (keyWordResult!=null && !keyWordResult.equals("")) {
+//                ((TextView) findViewById(R.id.result_text)).setText(keyWordResult);
+                        if(update){
+                            game.gameUpdate(keyWordResult);
+                            update = false;
+                        }
+                    }
+//                }
             }
+
     }
 
     /**
@@ -237,16 +248,17 @@ public class PocketSphinxActivity extends Activity implements
     }
 
     private int keywordPreposition = -1;
-    private String getKeyword(String s){
+    private void getKeyword(String s){
         String tmp = null;
         String[] a = s.split(" ");
         for (int i = 0;i<a.length;i++){
             if (valSet.contains(a[i]) && keywordPreposition < i){
-                tmp = a[i];
+                keyWordResult = a[i];
                 keywordPreposition = i;
+                update = true;
             }
         }
-        return tmp;
+//        return tmp;
     }
 
     public String returnKeyWord(){
