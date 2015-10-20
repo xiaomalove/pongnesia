@@ -133,22 +133,29 @@ public class PocketSphinxActivity extends Activity implements
     	    return;
 
         String text = hypothesis.getHypstr();
-        if (text.equals(KEYPHRASE))
+        if (text.equals(KEYPHRASE)) {
             switchSearch(DIGITS_SEARCH);
+            System.out.println("Game Start!!!");
+            game.serve();
+        }
         else
-            {
-//                keyWordResult = getKeyword(text);
+        {
+            if (!game.getDone()) {
                 getKeyword(text);
-//                synchronized (lock){
-                    if (keyWordResult!=null && !keyWordResult.equals("")) {
-//                ((TextView) findViewById(R.id.result_text)).setText(keyWordResult);
-                        if(update){
-                            game.gameUpdate(keyWordResult);
-                            update = false;
-                        }
+                if (keyWordResult != null && !keyWordResult.equals("")) {
+//               ((TextView) findViewById(R.id.result_text)).setText(keyWordResult);
+                    if (update) {
+                        game.gameUpdate(keyWordResult);
+                        update = false;
                     }
-//                }
+                }
             }
+            else
+            {
+                game.winingMessage();
+                // exit app TODO
+            }
+        }
 
     }
 
@@ -258,7 +265,6 @@ public class PocketSphinxActivity extends Activity implements
                 update = true;
             }
         }
-//        return tmp;
     }
 
     public String returnKeyWord(){
