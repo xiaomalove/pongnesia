@@ -47,10 +47,10 @@ public class Pingpong
             restorePoint();
         else if (commands.equals("score"))
             displayScore();
-        else if (commands.equals("a"))
-            point(commands);
-        else if (commands.equals("b"))
-            point(commands);
+//        else if (commands.equals("a"))
+//            point(commands);
+//        else if (commands.equals("b"))
+//            point(commands);
     }
 
     public void point(String player)

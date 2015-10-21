@@ -153,6 +153,7 @@ public class PocketSphinxActivity extends Activity implements
             else
             {
                 game.winingMessage();
+                recognizer.shutdown();
                 // exit app TODO
             }
         }
