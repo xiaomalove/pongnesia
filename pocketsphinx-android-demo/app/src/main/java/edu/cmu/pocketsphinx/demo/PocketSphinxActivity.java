@@ -160,8 +160,10 @@ public class PocketSphinxActivity extends Activity implements
                 if (keyWordResult != null && !keyWordResult.equals("")) {
 //               ((TextView) findViewById(R.id.result_text)).setText(keyWordResult);
                     if (update) {
-                        game.gameUpdate(keyWordResult);
-                        update = false;
+                        synchronized (this.getClass()) {
+                            game.gameUpdate(keyWordResult);
+                            update = false;
+                        }
                     }
                 }
             }
