@@ -1,4 +1,6 @@
 package edu.cmu.pocketsphinx.demo;
+import android.speech.tts.TextToSpeech;
+
 import java.util.*;
 
 //bug list:
@@ -11,13 +13,14 @@ public class Pingpong
     private boolean done;
     private ArrayList<String> records;
     private int serve, winStraight, recordsCount;
+    private TextToSpeech t1;
     private String[] funWords = {"fun words 1",
             "fun words 2",
             "fun words 3",
             "fun words 4",
             "fun words 5"};
 
-    public Pingpong(String player1, String player2)// init with a pass in SR
+    public Pingpong(String player1, String player2, TextToSpeech speaker)// init with a pass in SR
     {
         this.player1 = new Player(player1);
         this.player2 = new Player(player2);
@@ -25,7 +28,8 @@ public class Pingpong
         serve = 0;
         winStraight = 0;
         recordsCount = 0;
-        records = new ArrayList<String>();
+        records = new ArrayList<>();
+        t1 = speaker;
     }
 
     public boolean getDone()
@@ -82,7 +86,9 @@ public class Pingpong
             calWinStraight();
         }
         else
-            System.out.println("There is no point to decrease");
+            speakToUser("There is no point to decrease");
+//        else
+//            System.out.println("There is no point to decrease");
     }
 
     public void serve()
@@ -91,6 +97,12 @@ public class Pingpong
             System.out.println(player1.getName() + " serve");// TODO: SR out
         else
             System.out.println(player2.getName() + " serve");// TODO: SR out
+
+        if (serve == 0)
+            speakToUser(player1.getName() + " serve");
+        else
+            speakToUser(player2.getName() + " serve");
+
     }
 
     public void calWinStraight()
@@ -117,7 +129,8 @@ public class Pingpong
             Random random = new Random();
             int i = random.nextInt(funWords.length);
             System.out.println(winStraight + " in a row!!!");// TODO: SR out
-            System.out.println(funWords[i]);
+//            System.out.println(funWords[i]);
+            speakToUser(winStraight + " in a row!!!");
         }
     }
 
@@ -141,6 +154,7 @@ public class Pingpong
     {
         System.out.print("Current score: \n" + player1.getName() + " " + player1.getScore() + ": ");
         System.out.println(player2.getScore() + " " + player2.getName());
+        speakToUser("Current score: \n" + player1.getName() + " " + player1.getScore() + ": " + player2.getScore() + " " + player2.getName());
     }
 
 
@@ -176,5 +190,20 @@ public class Pingpong
             System.out.println(player1.getName() + " win");// TODO: SR out
         else
             System.out.println(player2.getName() + " win");// TODO: SR out
+
+        if (player1.getScore() > player2.getScore())
+            speakToUser(player1.getName() + " win");
+        else
+            speakToUser(player1.getName() + " win");
+    }
+
+    public void speakToUser(String words)
+    {
+        boolean end = false;
+        while (!end)
+            if (!t1.isSpeaking())
+                t1.speak(words, TextToSpeech.QUEUE_FLUSH, null);
+            else
+                end = true;
     }
 }

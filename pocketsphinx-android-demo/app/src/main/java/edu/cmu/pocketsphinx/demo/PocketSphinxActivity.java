@@ -38,11 +38,13 @@ import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Locale;
 import java.util.Set;
 
 import android.app.Activity;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.speech.tts.TextToSpeech;
 import android.widget.TextView;
 import android.widget.Toast;
 import edu.cmu.pocketsphinx.Assets;
@@ -64,6 +66,7 @@ public class PocketSphinxActivity extends Activity implements
     private final Object lock = new Object();
     Set<String> valSet = new HashSet<>();
     private Pingpong game;
+    private TextToSpeech t1;
 
     /* Keyword we are looking for to activate menu */
     private static final String KEYPHRASE = "start game";
@@ -74,7 +77,6 @@ public class PocketSphinxActivity extends Activity implements
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
-        game = new Pingpong("pointwhite", "pointblack");
         // Prepare the data for UI
         captions = new HashMap<String, Integer>();
         captions.put(KWS_SEARCH, R.string.kws_caption);
@@ -85,6 +87,18 @@ public class PocketSphinxActivity extends Activity implements
         setContentView(R.layout.main);
         ((TextView) findViewById(R.id.caption_text))
                 .setText("Preparing the recognizer");
+
+        t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+            @Override
+            public void onInit(int status) {
+                if (status != TextToSpeech.ERROR) {
+                    t1.setLanguage(Locale.US);
+                }
+            }
+        });
+        game = new Pingpong("pointwhite", "pointblack", t1);
+//        t1.speak("some text", TextToSpeech.QUEUE_FLUSH, null);
+
 
         // Recognizer initialization is a time-consuming and it involves IO,
         // so we execute it in async task
@@ -136,6 +150,7 @@ public class PocketSphinxActivity extends Activity implements
         if (text.equals(KEYPHRASE)) {
             switchSearch(DIGITS_SEARCH);
             System.out.println("Game Start!!!");
+            t1.speak("Game Start!!!", TextToSpeech.QUEUE_FLUSH, null);
             game.serve();
         }
         else
