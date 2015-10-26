@@ -85,10 +85,10 @@ public class Pingpong
             displayScore();
             calWinStraight();
         }
-        else
+        else {
             speakToUser("There is no point to decrease");
-//        else
-//            System.out.println("There is no point to decrease");
+            System.out.println("There is no point to decrease");
+        }
     }
 
     public void serve()
@@ -199,11 +199,6 @@ public class Pingpong
 
     public void speakToUser(String words)
     {
-        boolean end = false;
-        while (!end)
-            if (!t1.isSpeaking())
-                t1.speak(words, TextToSpeech.QUEUE_FLUSH, null);
-            else
-                end = true;
+//        t1.speak(words, TextToSpeech.QUEUE_ADD, null);
     }
 }

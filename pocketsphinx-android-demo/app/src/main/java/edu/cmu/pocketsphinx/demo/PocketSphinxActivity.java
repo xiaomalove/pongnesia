@@ -77,6 +77,7 @@ public class PocketSphinxActivity extends Activity implements
     @Override
     public void onCreate(Bundle state) {
         super.onCreate(state);
+        game = new Pingpong("pointwhite", "pointblack", t1);
         // Prepare the data for UI
         captions = new HashMap<String, Integer>();
         captions.put(KWS_SEARCH, R.string.kws_caption);
@@ -96,7 +97,6 @@ public class PocketSphinxActivity extends Activity implements
                 }
             }
         });
-        game = new Pingpong("pointwhite", "pointblack", t1);
 //        t1.speak("some text", TextToSpeech.QUEUE_FLUSH, null);
 
 
@@ -160,10 +160,8 @@ public class PocketSphinxActivity extends Activity implements
                 if (keyWordResult != null && !keyWordResult.equals("")) {
 //               ((TextView) findViewById(R.id.result_text)).setText(keyWordResult);
                     if (update) {
-                        synchronized (this.getClass()) {
-                            game.gameUpdate(keyWordResult);
-                            update = false;
-                        }
+                        game.gameUpdate(keyWordResult);
+                        update = false;
                     }
                 }
             }
@@ -273,7 +271,8 @@ public class PocketSphinxActivity extends Activity implements
     }
 
     private int keywordPreposition = -1;
-    private void getKeyword(String s){
+    private synchronized void getKeyword(String s){
+        keyWordResult = null;
         String tmp = null;
         String[] a = s.split(" ");
         for (int i = 0;i<a.length;i++){
