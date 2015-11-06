@@ -42,9 +42,12 @@ import java.util.Locale;
 import java.util.Set;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import edu.cmu.pocketsphinx.Assets;
@@ -52,14 +55,12 @@ import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.RecognitionListener;
 import edu.cmu.pocketsphinx.SpeechRecognizer;
 
-public class PocketSphinxActivity extends Activity implements
+public class PocketSphinxActivity implements
         RecognitionListener {
 		
     /* Named searches allow to quickly reconfigure the decoder */
     private static final String KWS_SEARCH = "wakeup";
-    private static final String FORECAST_SEARCH = "forecast";
     private static final String DIGITS_SEARCH = "digits";
-    private static final String PHONE_SEARCH = "phones";
     private static final String MENU_SEARCH = "menu";
     private String keyWordResult="";
     private boolean update = false;
@@ -67,6 +68,7 @@ public class PocketSphinxActivity extends Activity implements
     Set<String> valSet = new HashSet<>();
     private Pingpong game;
     private TextToSpeech t1;
+    private Context context;
 
     /* Keyword we are looking for to activate menu */
     private static final String KEYPHRASE = "start game";
@@ -74,29 +76,32 @@ public class PocketSphinxActivity extends Activity implements
     private SpeechRecognizer recognizer;
     private HashMap<String, Integer> captions;
 
-    @Override
+    public PocketSphinxActivity(Context context){
+        this.context = context;
+    }
+
+
     public void onCreate(Bundle state) {
-        super.onCreate(state);
+//        super.onCreate(state);
+
         game = new Pingpong("pointwhite", "pointblack", t1);
         // Prepare the data for UI
         captions = new HashMap<String, Integer>();
         captions.put(KWS_SEARCH, R.string.kws_caption);
         captions.put(MENU_SEARCH, R.string.menu_caption);
         captions.put(DIGITS_SEARCH, R.string.digits_caption);
-//        captions.put(PHONE_SEARCH, R.string.phone_caption);
-//        captions.put(FORECAST_SEARCH, R.string.forecast_caption);
-        setContentView(R.layout.main);
-        ((TextView) findViewById(R.id.caption_text))
-                .setText("Preparing the recognizer");
+//        setContentView(R.layout.main);
+//        ((TextView) findViewById(R.id.caption_text))
+//                .setText("Preparing the recognizer");
 
-        t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-            @Override
-            public void onInit(int status) {
-                if (status != TextToSpeech.ERROR) {
-                    t1.setLanguage(Locale.US);
-                }
-            }
-        });
+//        t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
+//            @Override
+//            public void onInit(int status) {
+//                if (status != TextToSpeech.ERROR) {
+//                    t1.setLanguage(Locale.US);
+//                }
+//            }
+//        });
 //        t1.speak("some text", TextToSpeech.QUEUE_FLUSH, null);
 
 
@@ -107,7 +112,7 @@ public class PocketSphinxActivity extends Activity implements
             @Override
             protected Exception doInBackground(Void... params) {
                 try {
-                    Assets assets = new Assets(PocketSphinxActivity.this);
+                    Assets assets = new Assets(context);
                     File assetDir = assets.syncAssets();
                     setupRecognizer(assetDir);
                 } catch (IOException e) {
@@ -119,8 +124,8 @@ public class PocketSphinxActivity extends Activity implements
             @Override
             protected void onPostExecute(Exception result) {
                 if (result != null) {
-                    ((TextView) findViewById(R.id.caption_text))
-                            .setText("Failed to init recognizer " + result);
+//                    ((TextView) findViewById(R.id.caption_text))
+//                            .setText("Failed to init recognizer " + result);
                 } else {
                     switchSearch(KWS_SEARCH);
                 }
@@ -129,9 +134,9 @@ public class PocketSphinxActivity extends Activity implements
 
     }
 
-    @Override
+//    @Override
     public void onDestroy() {
-        super.onDestroy();
+//        super.onDestroy();
         recognizer.cancel();
         recognizer.shutdown();
     }
@@ -145,18 +150,18 @@ public class PocketSphinxActivity extends Activity implements
     public void onPartialResult(Hypothesis hypothesis) {
         if (hypothesis == null)
     	    return;
-
         String text = hypothesis.getHypstr();
         if (text.equals(KEYPHRASE)) {
             switchSearch(DIGITS_SEARCH);
             System.out.println("Game Start!!!");
-            t1.speak("Game Start!!!", TextToSpeech.QUEUE_FLUSH, null);
+//            t1.speak("Game Start!!!", TextToSpeech.QUEUE_FLUSH, null);
             game.serve();
         }
         else
         {
             if (!game.getDone()) {
                 getKeyword(text);
+                System.out.println(text);
                 if (keyWordResult != null && !keyWordResult.equals("")) {
 //               ((TextView) findViewById(R.id.result_text)).setText(keyWordResult);
                     if (update) {
@@ -180,11 +185,6 @@ public class PocketSphinxActivity extends Activity implements
      */
     @Override
     public void onResult(Hypothesis hypothesis) {
-        ((TextView) findViewById(R.id.result_text)).setText("");
-        if (hypothesis != null) {
-            String text = hypothesis.getHypstr();
-            makeText(getApplicationContext(), text, Toast.LENGTH_SHORT).show();
-        }
     }
 
     @Override
@@ -196,8 +196,6 @@ public class PocketSphinxActivity extends Activity implements
      */
     @Override
     public void onEndOfSpeech() {
-//        if (!recognizer.getSearchName().equals(KWS_SEARCH))
-//            switchSearch(KWS_SEARCH);
     }
 
     private void switchSearch(String searchName) {
@@ -210,9 +208,6 @@ public class PocketSphinxActivity extends Activity implements
         else
             //recognizer.startListening("what",10000);
             recognizer.startListening(searchName, 100000);
-
-        String caption = getResources().getString(captions.get(searchName));
-        ((TextView) findViewById(R.id.caption_text)).setText(caption);
     }
 
     private void setupRecognizer(File assetsDir) throws IOException {
@@ -258,7 +253,7 @@ public class PocketSphinxActivity extends Activity implements
 
     @Override
     public void onError(Exception error) {
-        ((TextView) findViewById(R.id.caption_text)).setText(error.getMessage());
+//        ((TextView) findViewById(R.id.caption_text)).setText(error.getMessage());
     }
 
     private void initValSet(){
@@ -280,6 +275,7 @@ public class PocketSphinxActivity extends Activity implements
                 keyWordResult = a[i];
                 keywordPreposition = i;
                 update = true;
+//                System.out.println(keyWordResult);
             }
         }
     }
@@ -287,6 +283,30 @@ public class PocketSphinxActivity extends Activity implements
     public String returnKeyWord(){
         return keyWordResult;
     }
+
+    public void addName() throws IOException {
+//        Button button = (Button) findViewById(R.id.button);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View view) {
+//                recognizer.shutdown();
+//                SaveName sn = new SaveName();
+//                try {
+//                    File file = assets.syncAssets();
+//                    File digitsGrammar = new File(file, "digits.gram");
+//                    //recognizer.addKeywordSearch(DIGITS_SEARCH, digitsGrammar);
+////                    recognizer.addGrammarSearch(DIGITS_SEARCH, digitsGrammar);
+//                    sn.writeName("mary",digitsGrammar);
+//                } catch (IOException e) {
+//                    e.printStackTrace();
+//                }
+//                Bundle state = null;
+//                onCreate(state);
+//            }
+//        });
+    }
+
+
 
     @Override
     public void onTimeout() {
