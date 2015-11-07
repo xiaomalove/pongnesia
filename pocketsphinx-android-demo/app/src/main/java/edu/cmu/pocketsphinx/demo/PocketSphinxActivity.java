@@ -72,9 +72,7 @@ public class PocketSphinxActivity implements
     }
 
 
-    public void onCreate(Bundle state) {
-//        super.onCreate(state);
-
+    public void onCreate() {
         game = new Pingpong("pointwhite", "pointblack", t1);
         // Prepare the data for UI
 
