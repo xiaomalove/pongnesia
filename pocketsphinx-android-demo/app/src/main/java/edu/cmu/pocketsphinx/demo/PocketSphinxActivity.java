@@ -30,26 +30,17 @@
 
 package edu.cmu.pocketsphinx.demo;
 
-import static android.widget.Toast.makeText;
 import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Locale;
 import java.util.Set;
 
-import android.app.Activity;
 import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.speech.tts.TextToSpeech;
-import android.view.View;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 import edu.cmu.pocketsphinx.Assets;
 import edu.cmu.pocketsphinx.Hypothesis;
 import edu.cmu.pocketsphinx.RecognitionListener;
@@ -69,12 +60,12 @@ public class PocketSphinxActivity implements
     private Pingpong game;
     private TextToSpeech t1;
     private Context context;
+    private int keywordPreposition = -1;
 
-    /* Keyword we are looking for to activate menu */
+
     private static final String KEYPHRASE = "start game";
 
     private SpeechRecognizer recognizer;
-    private HashMap<String, Integer> captions;
 
     public PocketSphinxActivity(Context context){
         this.context = context;
@@ -86,27 +77,6 @@ public class PocketSphinxActivity implements
 
         game = new Pingpong("pointwhite", "pointblack", t1);
         // Prepare the data for UI
-        captions = new HashMap<String, Integer>();
-        captions.put(KWS_SEARCH, R.string.kws_caption);
-        captions.put(MENU_SEARCH, R.string.menu_caption);
-        captions.put(DIGITS_SEARCH, R.string.digits_caption);
-//        setContentView(R.layout.main);
-//        ((TextView) findViewById(R.id.caption_text))
-//                .setText("Preparing the recognizer");
-
-//        t1 = new TextToSpeech(getApplicationContext(), new TextToSpeech.OnInitListener() {
-//            @Override
-//            public void onInit(int status) {
-//                if (status != TextToSpeech.ERROR) {
-//                    t1.setLanguage(Locale.US);
-//                }
-//            }
-//        });
-//        t1.speak("some text", TextToSpeech.QUEUE_FLUSH, null);
-
-
-        // Recognizer initialization is a time-consuming and it involves IO,
-        // so we execute it in async task
 
         new AsyncTask<Void, Void, Exception>() {
             @Override
@@ -123,10 +93,7 @@ public class PocketSphinxActivity implements
 
             @Override
             protected void onPostExecute(Exception result) {
-                if (result != null) {
-//                    ((TextView) findViewById(R.id.caption_text))
-//                            .setText("Failed to init recognizer " + result);
-                } else {
+                if (result == null) {
                     switchSearch(KWS_SEARCH);
                 }
             }
@@ -134,9 +101,7 @@ public class PocketSphinxActivity implements
 
     }
 
-//    @Override
     public void onDestroy() {
-//        super.onDestroy();
         recognizer.cancel();
         recognizer.shutdown();
     }
@@ -154,7 +119,6 @@ public class PocketSphinxActivity implements
         if (text.equals(KEYPHRASE)) {
             switchSearch(DIGITS_SEARCH);
             System.out.println("Game Start!!!");
-//            t1.speak("Game Start!!!", TextToSpeech.QUEUE_FLUSH, null);
             game.serve();
         }
         else
@@ -163,7 +127,6 @@ public class PocketSphinxActivity implements
                 getKeyword(text);
                 System.out.println(text);
                 if (keyWordResult != null && !keyWordResult.equals("")) {
-//               ((TextView) findViewById(R.id.result_text)).setText(keyWordResult);
                     if (update) {
                         game.gameUpdate(keyWordResult);
                         update = false;
@@ -231,15 +194,8 @@ public class PocketSphinxActivity implements
 
         recognizer.addListener(this);
 
-        /** In your application you might not need to add all those searches.
-         * They are added here for demonstration. You can leave just one.
-         */
-
         // Create keyword-activation search.
         recognizer.addKeyphraseSearch(KWS_SEARCH, KEYPHRASE);
-        //recognizer.addKeyphraseSearch("test","what");
-        // Create grammar-based search for selection between demos
-
 
         File menuGrammar = new File(assetsDir, "menu.gram");
         recognizer.addGrammarSearch(MENU_SEARCH, menuGrammar);
@@ -253,7 +209,6 @@ public class PocketSphinxActivity implements
 
     @Override
     public void onError(Exception error) {
-//        ((TextView) findViewById(R.id.caption_text)).setText(error.getMessage());
     }
 
     private void initValSet(){
@@ -265,23 +220,16 @@ public class PocketSphinxActivity implements
         valSet.add("pointwhite");
     }
 
-    private int keywordPreposition = -1;
     private synchronized void getKeyword(String s){
         keyWordResult = null;
-        String tmp = null;
         String[] a = s.split(" ");
         for (int i = 0;i<a.length;i++){
             if (valSet.contains(a[i]) && keywordPreposition < i){
                 keyWordResult = a[i];
                 keywordPreposition = i;
                 update = true;
-//                System.out.println(keyWordResult);
             }
         }
-    }
-
-    public String returnKeyWord(){
-        return keyWordResult;
     }
 
     public void addName() throws IOException {
@@ -305,8 +253,6 @@ public class PocketSphinxActivity implements
 //            }
 //        });
     }
-
-
 
     @Override
     public void onTimeout() {
