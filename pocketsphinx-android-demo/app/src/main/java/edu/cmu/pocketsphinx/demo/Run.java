@@ -11,6 +11,6 @@ public class Run extends Activity{
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         PocketSphinxActivity psa = new PocketSphinxActivity(Run.this);
-        psa.onCreate(savedInstanceState);
+        psa.onCreate();
     }
 }

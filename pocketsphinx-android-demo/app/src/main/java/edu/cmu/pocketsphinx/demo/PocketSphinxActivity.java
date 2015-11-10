@@ -34,7 +34,6 @@ import static edu.cmu.pocketsphinx.SpeechRecognizerSetup.defaultSetup;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -67,20 +66,15 @@ public class PocketSphinxActivity implements
     private static final String KEYPHRASE = "start game";
 
     private SpeechRecognizer recognizer;
-    private HashMap<String, Integer> captions;
 
     public PocketSphinxActivity(Context context){
         this.context = context;
     }
 
 
-    public void onCreate(Bundle state) {
+    public void onCreate() {
         game = new Pingpong("pointwhite", "pointblack", t1);
         // Prepare the data for UI
-        captions = new HashMap<String, Integer>();
-        captions.put(KWS_SEARCH, R.string.kws_caption);
-        captions.put(MENU_SEARCH, R.string.menu_caption);
-        captions.put(DIGITS_SEARCH, R.string.digits_caption);
 
         new AsyncTask<Void, Void, Exception>() {
             @Override

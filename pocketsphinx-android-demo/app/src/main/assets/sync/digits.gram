@@ -5,8 +5,8 @@ grammar digits;
 public <digits> = <digit>+ ;
 
 <digit> = <option1> |
-          <garbage_loop>|
           <garbage_loop_serve> |
+          <garbage_loop_rematch> |
           <garbage_loop_score> |
           <garbage_loop_wrong>
           ;
@@ -22,94 +22,85 @@ public <digits> = <digit>+ ;
             ;
 
 
-
-<garbage_loop> = ( <G1> | <G2>  | <G3>  | <G4>  | <G5>  | <G6>  | <G7>  | <G8>  | <G9>  | <G10> | <G11> | <G12>
+/*
+<garbage_loop> = ( <G1>  | <G2>  | <G3>  | <G4>  | <G5>  | <G6>  | <G7>  | <G8>  | <G9>  | <G10> | <G11> | <G12>
 						| <G13> | <G14> | <G15> | <G16> | <G17> | <G18> | <G19> | <G20> | <G21> | <G22> | <G23> | <G24> | <G25>
 						| <G26> | <G27> | <G28> | <G29> | <G30> | <G31> | <G32> | <G33> | <G34> | <G35> | <G36> | <G37> | <G38>
 						| <G39>)* ;
-
-/*
-<garbage_loop_rematch> = (<G40>|<G41>|<G42>|<G43>|<G44>)*;
 */
 
-<garbage_loop_serve> = (<G58> | <G59> |<G60> | <G61> | <G62> |<G63> |
+<garbage_loop_rematch> = (<G40>|<G41>|<G42>|<G43>|<G44>)*;
+
+<garbage_loop_serve> = (<G45> | <G46> |<G47> | <G58> | <G59> |<G60> | <G61> | <G62> |<G63> |
                         <G64> | <G65> |<G66> | <G67> | <G68> |<G69> | <G70> | <G71> )*;
 
-<garbage_loop_score> = (<G72> | <G73> |<G74> | <G75> | <G76> |
+<garbage_loop_score> = (<G48>|<G49>|<G50>|<G72> | <G73> |<G74> | <G75> | <G76> |
                         <G77> | <G78> | <G79> | <G80> | <G81> | <G82>|<G83>)*;
 
-<garbage_loop_wrong> = (<G84>|<G85>|<G86>|
+<garbage_loop_wrong> = (<G51>|<G52>|<G53> |<G84>|<G85>|<G86>|
                         <G87> | <G88> |<G89> | <G90>)*;
 
 //<garbage_loop_point> = (<G54>|<G55>|<G56>|<G57>)*;
 
-
-
-<G1> = ah;
-<G2> = rfour;
-<G3> = a;
-<G4> = aw;
-<G5> = aue;
-<G6> = ai;
-<G7> = garbageb;
-<G8> = rfive;
-<G9> = garbaged;
-<G10> = garbagedh;
-<G11> = eh;
-<G12> = er;
-<G13> = ae;
-<G14> = garbagef;
-<G15> = garbageg;
-<G16> = garbagehh;
-<G17> = garbageih;
-<G18> = ee;
-<G19> = garbagejh;
-<G20> = stwo;
-<G21> = garbagel;
-<G22> = mm;
-<G23> = pthree;
-<G24> = wthree;
-<G25> = au;
-<G26> = oi;
-<G27> = pone;
-<G28> = rone;
-<G29> = seone;
-<G30> = garbagesh;
-<G31> = pfour;
-<G32> = garbageth;
-<G33> = garbageuh;
-<G34> = ooh;
-<G35> = sethree;
-<G36> = garbagew;
-<G37> = garbagey;
-<G38> = garbagez;
-<G39> = garbagezh;
-
 /*
+<G1> = odd;
+<G2> = at;
+<G3> = hut;
+<G4> = ought;
+<G5> = cow;
+<G6> = hide;
+<G7> = be;
+<G8> = cheese;
+<G9> = dee;
+<G10> = thee;
+<G11> = ed;
+<G12> = hurt;
+<G13> = ate;
+<G14> = fee;
+<G15> = green;
+<G16> = he;
+<G17> = it;
+<G18> = eat;
+<G19> = gee;
+<G20> = key;
+<G21> = lee;
+<G22> = me;
+<G23> = knee;
+<G24> = ping;
+<G25> = oat;
+<G26> = toy;
+<G27> = pee;
+<G28> = read;
+<G29> = sea;
+<G30> = she;
+<G31> = tea;
+<G32> = theta;
+<G33> = hood;
+<G34> = two;
+<G35> = vee;
+<G36> = we;
+<G37> = yield;
+<G38> = zee;
+<G39> = seizure;
+*/
+
 <G40> = rone;
 <G41> = rtwo;
 <G42> = rthree;
 <G43> = rfour;
 <G44> = rfive;
-*/
 
-/*
 <G45> = seone;
 <G46> = setwo;
 <G47> = sethree;
-*/
 
-/*
 <G48> = sone;
 <G49> = stwo;
 <G50> = sthree;
-*/
 
-/*
 <G51> = wone;
 <G52> = wtwo;
 <G53> = wthree;
-*/
 
 /*
 <G54> = pone;
